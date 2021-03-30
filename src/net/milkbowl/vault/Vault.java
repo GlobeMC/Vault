@@ -39,26 +39,7 @@ import net.milkbowl.vault.chat.plugins.Chat_mChat;
 import net.milkbowl.vault.chat.plugins.Chat_mChatSuite;
 import net.milkbowl.vault.chat.plugins.Chat_rscPermissions;
 import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.plugins.Economy_BOSE7;
-import net.milkbowl.vault.economy.plugins.Economy_CommandsEX;
-import net.milkbowl.vault.economy.plugins.Economy_Craftconomy3;
-import net.milkbowl.vault.economy.plugins.Economy_CurrencyCore;
-import net.milkbowl.vault.economy.plugins.Economy_DigiCoin;
-import net.milkbowl.vault.economy.plugins.Economy_Dosh;
-import net.milkbowl.vault.economy.plugins.Economy_EconXP;
-import net.milkbowl.vault.economy.plugins.Economy_Essentials;
-import net.milkbowl.vault.economy.plugins.Economy_GoldIsMoney2;
-import net.milkbowl.vault.economy.plugins.Economy_GoldenChestEconomy;
-import net.milkbowl.vault.economy.plugins.Economy_Gringotts;
-import net.milkbowl.vault.economy.plugins.Economy_McMoney;
-import net.milkbowl.vault.economy.plugins.Economy_MineConomy;
-import net.milkbowl.vault.economy.plugins.Economy_MultiCurrency;
-import net.milkbowl.vault.economy.plugins.Economy_TAEcon;
-import net.milkbowl.vault.economy.plugins.Economy_XPBank;
-import net.milkbowl.vault.economy.plugins.Economy_eWallet;
-import net.milkbowl.vault.economy.plugins.Economy_iConomy6;
-import net.milkbowl.vault.economy.plugins.Economy_SDFEconomy;
-import net.milkbowl.vault.economy.plugins.Economy_Minefaconomy;  
+import net.milkbowl.vault.economy.plugins.Economy_GoldEconomy;
 import net.milkbowl.vault.permission.Permission;
 import net.milkbowl.vault.permission.plugins.Permission_DroxPerms;
 import net.milkbowl.vault.permission.plugins.Permission_GroupManager;
@@ -101,14 +82,13 @@ import org.json.simple.JSONValue;
 import com.nijikokun.register.payment.Methods;
 
 import net.milkbowl.vault.chat.plugins.Chat_TotalPermissions;
-import net.milkbowl.vault.economy.plugins.Economy_MiConomy;
 
 public class Vault extends JavaPlugin {
 
     private static final String VAULT_BUKKIT_URL = "https://dev.bukkit.org/projects/Vault";
     private static Logger log;
     private Permission perms;
-    private String newVersionTitle = "";
+    private final String newVersionTitle = "";
     private double newVersion = 0;
     private double currentVersion = 0;
     private String currentVersionTitle = "";
@@ -127,7 +107,7 @@ public class Vault extends JavaPlugin {
         plugin = this;
         log = this.getLogger();
         currentVersionTitle = getDescription().getVersion().split("-")[0];
-        currentVersion = Double.valueOf(currentVersionTitle.replaceFirst("\\.", ""));
+        currentVersion = Double.parseDouble(currentVersionTitle.replaceFirst("\\.", ""));
         sm = getServer().getServicesManager();
         // set defaults
         getConfig().addDefault("update-check", true);
@@ -149,8 +129,7 @@ public class Vault extends JavaPlugin {
             public void run() {
                 // Programmatically set the default permission value cause Bukkit doesn't handle plugin.yml properly for Load order STARTUP plugins
                 org.bukkit.permissions.Permission perm = getServer().getPluginManager().getPermission("vault.update");
-                if (perm == null)
-                {
+                if (perm == null) {
                     perm = new org.bukkit.permissions.Permission("vault.update");
                     perm.setDefault(PermissionDefault.OP);
                     plugin.getServer().getPluginManager().addPermission(perm);
@@ -179,9 +158,7 @@ public class Vault extends JavaPlugin {
                         }
                     }
                 }, 0, 432000);
-
             }
-
         });
 
         // Load up the Plugin metrics
@@ -239,68 +216,9 @@ public class Vault extends JavaPlugin {
      * Attempts to load Economy Addons
      */
     private void loadEconomy() {
-        // Try to load MiConomy
-        hookEconomy("MiConomy", Economy_MiConomy.class, ServicePriority.Normal, "com.gmail.bleedobsidian.miconomy.Main");
 
-        // Try to load MiFaConomy
-        hookEconomy("MineFaConomy", Economy_Minefaconomy.class, ServicePriority.Normal, "me.coniin.plugins.minefaconomy.Minefaconomy");
-
-        // Try to load MultiCurrency
-        hookEconomy("MultiCurrency", Economy_MultiCurrency.class, ServicePriority.Normal, "me.ashtheking.currency.Currency", "me.ashtheking.currency.CurrencyList");
-
-        // Try to load MineConomy
-        hookEconomy("MineConomy", Economy_MineConomy.class, ServicePriority.Normal, "me.mjolnir.mineconomy.MineConomy");
-
-        // Try to load McMoney
-        hookEconomy("McMoney", Economy_McMoney.class, ServicePriority.Normal, "boardinggamer.mcmoney.McMoneyAPI");
-
-        // Try to load Craftconomy3
-        hookEconomy("CraftConomy3", Economy_Craftconomy3.class, ServicePriority.Normal, "com.greatmancode.craftconomy3.tools.interfaces.BukkitLoader");
-
-        // Try to load eWallet
-        hookEconomy("eWallet", Economy_eWallet.class, ServicePriority.Normal, "me.ethan.eWallet.ECO");
-
-        // Try to load BOSEconomy 7
-        hookEconomy("BOSEconomy7", Economy_BOSE7.class, ServicePriority.Normal, "cosine.boseconomy.BOSEconomy", "cosine.boseconomy.CommandHandler");
-
-        // Try to load CurrencyCore
-        hookEconomy("CurrencyCore", Economy_CurrencyCore.class, ServicePriority.Normal, "is.currency.Currency");
-
-        // Try to load Gringotts
-        hookEconomy("Gringotts", Economy_Gringotts.class, ServicePriority.Normal, "org.gestern.gringotts.Gringotts");
-
-        // Try to load Essentials Economy
-        hookEconomy("Essentials Economy", Economy_Essentials.class, ServicePriority.Low, "com.earth2me.essentials.api.Economy", "com.earth2me.essentials.api.NoLoanPermittedException",  "com.earth2me.essentials.api.UserDoesNotExistException");
-
-        // Try to load iConomy 6
-        hookEconomy("iConomy 6", Economy_iConomy6.class, ServicePriority.High, "com.iCo6.iConomy");
-
-        // Try to load EconXP
-        hookEconomy("EconXP", Economy_EconXP.class, ServicePriority.Normal, "ca.agnate.EconXP.EconXP");
-
-        // Try to load GoldIsMoney2
-        hookEconomy("GoldIsMoney2", Economy_GoldIsMoney2.class, ServicePriority.Normal, "com.flobi.GoldIsMoney2.GoldIsMoney");
-
-        // Try to load GoldenChestEconomy
-        hookEconomy("GoldenChestEconomy", Economy_GoldenChestEconomy.class, ServicePriority.Normal, "me.igwb.GoldenChest.GoldenChestEconomy");
-
-        // Try to load Dosh
-        hookEconomy("Dosh", Economy_Dosh.class, ServicePriority.Normal, "com.gravypod.Dosh.Dosh");
-
-        // Try to load CommandsEX Economy
-        hookEconomy("CommandsEX", Economy_CommandsEX.class, ServicePriority.Normal, "com.github.zathrus_writer.commandsex.api.EconomyAPI");
-
-        // Try to load SDFEconomy Economy
-        hookEconomy("SDFEconomy", Economy_SDFEconomy.class, ServicePriority.Normal, "com.github.omwah.SDFEconomy.SDFEconomy");
-
-        // Try to load XPBank
-        hookEconomy("XPBank", Economy_XPBank.class, ServicePriority.Normal, "com.gmail.mirelatrue.xpbank.XPBank");
-
-        // Try to load TAEcon
-        hookEconomy("TAEcon", Economy_TAEcon.class, ServicePriority.Normal, "net.teamalpha.taecon.TAEcon");
-
-        // Try to load DigiCoin
-        hookEconomy("DigiCoin", Economy_DigiCoin.class, ServicePriority.Normal, "co.uk.silvania.cities.digicoin.DigiCoin");
+        // Try to load GoldEconomy
+        hookEconomy("GoldEconomy", Economy_GoldEconomy.class, ServicePriority.Normal, "io.github.raidordev.GoldEconomy");
     }
 
     /**
@@ -354,7 +272,7 @@ public class Vault extends JavaPlugin {
 
         Permission perms = new Permission_SuperPerms(this);
         sm.register(Permission.class, perms, this, ServicePriority.Lowest);
-        log.info(String.format("[Permission] SuperPermissions loaded as backup permission system."));
+        log.info("[Permission] SuperPermissions loaded as backup permission system.");
 
         this.perms = sm.getRegistration(Permission.class).getProvider();
     }
@@ -428,7 +346,7 @@ public class Vault extends JavaPlugin {
         }
         Economy econ1 = null;
         Economy econ2 = null;
-        String economies = "";
+        StringBuilder economies = new StringBuilder();
         for (RegisteredServiceProvider<Economy> econ : econs) {
             String econName = econ.getProvider().getName().replace(" ", "");
             if (econName.equalsIgnoreCase(args[0])) {
@@ -437,9 +355,9 @@ public class Vault extends JavaPlugin {
                 econ2 = econ.getProvider();
             }
             if (economies.length() > 0) {
-            	economies += ", ";
+            	economies.append(", ");
             }
-            economies += econName;
+            economies.append(econName);
         }
 
         if (econ1 == null) {
@@ -452,58 +370,58 @@ public class Vault extends JavaPlugin {
             return;
         }
 
-        sender.sendMessage("This may take some time to convert, expect server lag.");
-        for (OfflinePlayer op : Bukkit.getServer().getOfflinePlayers()) {
-            if (econ1.hasAccount(op)) {
-                if (econ2.hasAccount(op)) {
-                    continue;
-                }
-                econ2.createPlayerAccount(op);
-                double diff = econ1.getBalance(op) - econ2.getBalance(op);
-                if (diff > 0) {
-                	econ2.depositPlayer(op, diff);
-                } else if (diff < 0) {
-                	econ2.withdrawPlayer(op, -diff);
-                }
-                
-            }
-        }
+//        sender.sendMessage("This may take some time to convert, expect server lag.");
+//        for (OfflinePlayer op : Bukkit.getServer().getOfflinePlayers()) {
+//            if (econ1.hasAccount(op)) {
+//                if (econ2.hasAccount(op)) {
+//                    continue;
+//                }
+//                econ2.createPlayerAccount(op);
+//                double diff = econ1.getBalance(op) - econ2.getBalance(op);
+//                if (diff > 0) {
+//                	econ2.depositPlayer(op, diff);
+//                } else if (diff < 0) {
+//                	econ2.withdrawPlayer(op, -diff);
+//                }
+//
+//            }
+//        }
         sender.sendMessage("Converson complete, please verify the data before using it.");
     }
 
     private void infoCommand(CommandSender sender) {
         // Get String of Registered Economy Services
-        String registeredEcons = null;
+        StringBuilder registeredEcons = null;
         Collection<RegisteredServiceProvider<Economy>> econs = this.getServer().getServicesManager().getRegistrations(Economy.class);
         for (RegisteredServiceProvider<Economy> econ : econs) {
             Economy e = econ.getProvider();
             if (registeredEcons == null) {
-                registeredEcons = e.getName();
+                registeredEcons = new StringBuilder(e.getName());
             } else {
-                registeredEcons += ", " + e.getName();
+                registeredEcons.append(", ").append(e.getName());
             }
         }
 
         // Get String of Registered Permission Services
-        String registeredPerms = null;
+        StringBuilder registeredPerms = null;
         Collection<RegisteredServiceProvider<Permission>> perms = this.getServer().getServicesManager().getRegistrations(Permission.class);
         for (RegisteredServiceProvider<Permission> perm : perms) {
             Permission p = perm.getProvider();
             if (registeredPerms == null) {
-                registeredPerms = p.getName();
+                registeredPerms = new StringBuilder(p.getName());
             } else {
-                registeredPerms += ", " + p.getName();
+                registeredPerms.append(", ").append(p.getName());
             }
         }
 
-        String registeredChats = null;
+        StringBuilder registeredChats = null;
         Collection<RegisteredServiceProvider<Chat>> chats = this.getServer().getServicesManager().getRegistrations(Chat.class);
         for (RegisteredServiceProvider<Chat> chat : chats) {
             Chat c = chat.getProvider();
             if (registeredChats == null) {
-                registeredChats = c.getName();
+                registeredChats = new StringBuilder(c.getName());
             } else {
-                registeredChats += ", " + c.getName();
+                registeredChats.append(", ").append(c.getName());
             }
         }
 
@@ -525,9 +443,9 @@ public class Vault extends JavaPlugin {
         }
         // Send user some info!
         sender.sendMessage(String.format("[%s] Vault v%s Information", getDescription().getName(), getDescription().getVersion()));
-        sender.sendMessage(String.format("[%s] Economy: %s [%s]", getDescription().getName(), econ == null ? "None" : econ.getName(), registeredEcons));
-        sender.sendMessage(String.format("[%s] Permission: %s [%s]", getDescription().getName(), perm == null ? "None" : perm.getName(), registeredPerms));
-        sender.sendMessage(String.format("[%s] Chat: %s [%s]", getDescription().getName(), chat == null ? "None" : chat.getName(), registeredChats));
+        sender.sendMessage(String.format("[%s] Economy: %s [%s]", getDescription().getName(), econ == null ? "None" : econ.getName(), registeredEcons.toString()));
+        sender.sendMessage(String.format("[%s] Permission: %s [%s]", getDescription().getName(), perm == null ? "None" : perm.getName(), registeredPerms.toString()));
+        sender.sendMessage(String.format("[%s] Chat: %s [%s]", getDescription().getName(), chat == null ? "None" : chat.getName(), registeredChats.toString()));
     }
 
     /**
@@ -550,26 +468,26 @@ public class Vault extends JavaPlugin {
     }
 
     public double updateCheck(double currentVersion) {
-        try {
-            URL url = new URL("https://api.curseforge.com/servermods/files?projectids=33184");
-            URLConnection conn = url.openConnection();
-            conn.setReadTimeout(5000);
-            conn.addRequestProperty("User-Agent", "Vault Update Checker");
-            conn.setDoOutput(true);
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            final String response = reader.readLine();
-            final JSONArray array = (JSONArray) JSONValue.parse(response);
-
-            if (array.size() == 0) {
-                this.getLogger().warning("No files found, or Feed URL is bad.");
-                return currentVersion;
-            }
-            // Pull the last version from the JSON
-            newVersionTitle = ((String) ((JSONObject) array.get(array.size() - 1)).get("name")).replace("Vault", "").trim();
-            return Double.valueOf(newVersionTitle.replaceFirst("\\.", "").trim());
-        } catch (Exception e) {
-            log.info("There was an issue attempting to check for the latest version.");
-        }
+//        try {
+//            URL url = new URL("https://api.curseforge.com/servermods/files?projectids=33184");
+//            URLConnection conn = url.openConnection();
+//            conn.setReadTimeout(5000);
+//            conn.addRequestProperty("User-Agent", "Vault Update Checker");
+//            conn.setDoOutput(true);
+//            final BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//            final String response = reader.readLine();
+//            final JSONArray array = (JSONArray) JSONValue.parse(response);
+//
+//            if (array.size() == 0) {
+//                this.getLogger().warning("No files found, or Feed URL is bad.");
+//                return currentVersion;
+//            }
+//            // Pull the last version from the JSON
+//            newVersionTitle = ((String) ((JSONObject) array.get(array.size() - 1)).get("name")).replace("Vault", "").trim();
+//            return Double.parseDouble(newVersionTitle.replaceFirst("\\.", "").trim());
+//        } catch (Exception e) {
+//            log.info("There was an issue attempting to check for the latest version.");
+//        }
         return currentVersion;
     }
 
@@ -636,21 +554,13 @@ public class Vault extends JavaPlugin {
                     try {
                         Method m = Methods.class.getMethod("addMethod", Methods.class);
                         m.setAccessible(true);
-                        m.invoke(null, "Vault", new net.milkbowl.vault.VaultEco());
+                        m.invoke(null, "Vault", new net.milkbowl.vault.economy.plugins.Economy_GoldEconomy(plugin));
                         if (!Methods.setPreferred("Vault")) {
                             log.info("Unable to hook register");
                         } else {
                             log.info("[Vault] - Successfully injected Vault methods into Register.");
                         }
-                    } catch (SecurityException e) {
-                        log.info("Unable to hook register");
-                    } catch (NoSuchMethodException e) {
-                        log.info("Unable to hook register");
-                    } catch (IllegalArgumentException e) {
-                        log.info("Unable to hook register");
-                    } catch (IllegalAccessException e) {
-                        log.info("Unable to hook register");
-                    } catch (InvocationTargetException e) {
+                    } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
                         log.info("Unable to hook register");
                     }
                 }

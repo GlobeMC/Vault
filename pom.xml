@@ -6,7 +6,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<bukkitVersion>1.13.1-R0.1-SNAPSHOT</bukkitVersion>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<api.version>1.7</api.version>
+		<api.version>1.8</api.version>
 	</properties>
 
 	<!-- Project information -->
@@ -86,6 +86,16 @@ Vault currently supports the following: Permissions 3, PEX, GroupManager, bPerms
 			<groupId>org.bstats</groupId>
 			<artifactId>bstats-bukkit</artifactId>
 			<version>1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.raidordev</groupId>
+			<artifactId>GoldEconomy</artifactId>
+			<version>1.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jonahseguin</groupId>
+			<artifactId>Payload</artifactId>
+			<version>3.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gmail.bleedobsidian.miconomy</groupId>
